@@ -20,6 +20,5 @@ def preview: [
   ] | join("\t")
   ),
   (if (.longDescription>"") then "====== Long Description\n"+ .longDescription else "" end),
-  "====== Platform",
-  (.platforms|sort|join(","))
+  (if (.platforms) then "====== Platform\n" + (.platforms|sort|join(",")) else "" end)
 ] | join("\n");
