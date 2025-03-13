@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 NIXPKGS_EXPR=${NIXPKGS_EXPR:-nixpkgs}
+FLAKE=${NIXPKGS_EXPR%%\#*}
 INFO="$(cat <<EOF
     First word of Query is sent to nix search
 
@@ -37,7 +38,7 @@ DETAIL='
 nix search "$NIXPKGS_EXPR" --json "${1:-.}" | jq -r "$LISTING"
 ) | fzf --exit-0 --sync \
     --exact --reverse \
-    --preview "nix eval --json '$NIXPKGS_EXPR#{4}.meta' --json | jq -r '$DETAIL'" \
+    --preview "nix eval --json '$FLAKE#{4}.meta' --json | jq -r '$DETAIL'" \
     --delimiter '\t' --with-nth ..3 --accept-nth 2 \
     --prompt="Nixpkgs Search (Press ? for help)> " \
     --bind "?:preview:echo \"$INFO\"" \
