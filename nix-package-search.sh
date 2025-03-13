@@ -12,8 +12,10 @@ EOF
 
 PREVIEW='include "package-formats";preview'
 LISTING='include "package-formats";listing'
+HEADER='include "package-formats";header'
 
-(echo -e "Version  \tPackage   \tDescription  \tKey"
+(
+jq -L "$JQLIB" -n -r "$HEADER"
 nix search "$NIXPKGS_EXPR" --json "${1:-.}" | jq -L "$JQLIB" -r "$LISTING"
 ) | fzf --exit-0 --sync \
     --exact --reverse \
