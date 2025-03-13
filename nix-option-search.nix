@@ -2,7 +2,6 @@
   writeShellApplication,
   jq,
   fzf,
-  nix,
   gnused,
   coreutils,
   nixosOptionsDoc,
@@ -11,7 +10,7 @@
 }: rec {
   cli = writeShellApplication {
     name = "nix-option-search";
-    runtimeInputs = [jq fzf nix gnused coreutils];
+    runtimeInputs = [jq fzf gnused coreutils];
     text = builtins.readFile ./nix-option-search.sh;
   };
   cliWithOptionsJson = optionsJson: name:
