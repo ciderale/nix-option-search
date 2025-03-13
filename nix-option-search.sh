@@ -69,40 +69,7 @@ elif [ "$1" == "preview" ]; then
       shift 1;
       NAME=$(extract_name "$1")
       RAW=$(raw_entry)
-      TYPE=$(echo "$RAW" | jq -r .type)
-      DESCRIPTION=$(echo "$RAW" | jq -r .description)
-      DEFAULT=$(echo "$RAW" | jq -r '.default.text // empty')
-      DECLARATION=$(echo "$RAW" | jq -r '.declarations[]')
-      EXAMPLE=$(echo "$RAW" | jq -r '.example.text // empty')
-      READONLY=$(echo "$RAW" | jq -r 'if .readOnly then " READONLY" else "" end')
-
-      RESET="\033[0m"
-      BOLD="\033[1m"
-      YELLOW="\033[33m"
-      BLUE="\033[34m"
-
-      echo -e "${BOLD}Name${RESET}\t\t: $NAME"
-      echo -e "${BOLD}Type${RESET}\t\t: $TYPE"
-      echo -e "${BOLD}Declaration${RESET}\t: ${BLUE}${DECLARATION}${RESET}"
-      echo -e "${BOLD}Default${RESET}\t\t:$READONLY $DEFAULT"
-      echo "──────────────────────────────────────────────────────────────"
-      echo -e "${BOLD}Description${RESET}:"
-      echo ""
-      echo "$DESCRIPTION"
-      echo ""
-      if [ -n "$EXAMPLE" ]; then
-      echo "──────────────────────────────────────────────────────────────"
-      echo -e "${BOLD}Example${RESET}:"
-      echo -e "$YELLOW"
-      echo "$EXAMPLE"
-      echo -e "$RESET"
-      fi
-      if false; then
-            echo "──────────────────────────────────────────────────────────────"
-            echo -e "${BOLD}RAW${RESET}:"
-            echo ""
-            echo "$RAW"
-      fi
+      echo "$RAW" | jq -L "$JQLIB" -r "include \"option-formats\"; preview(\"$NAME\")";
 
 elif [ "$1" == "refine" ]; then
       shift 1;

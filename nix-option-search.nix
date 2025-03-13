@@ -11,6 +11,7 @@
   cli = writeShellApplication {
     name = "nix-option-search";
     runtimeInputs = [jq fzf gnused coreutils];
+    runtimeEnv.JQLIB = ./jqlib;
     text = builtins.readFile ./nix-option-search.sh;
   };
   cliWithOptionsJson = optionsJson: name:
