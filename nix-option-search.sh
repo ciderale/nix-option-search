@@ -3,73 +3,49 @@
 
 OPTIONSEARCH=$0
 
-SEARCH=${SEARCH:-keys}
-if [ "$SEARCH" == 'keys' ]; then
-      ## index only by "option-key"
-      function formatOptions() {
-            JQ_COMMAND="keys[]"
-            jq -r "$JQ_COMMAND" < "${OPTIONS_JSON}"
-      }
-else
-      ## index only by "option-key & description" (two-line display)
-      function formatOptions() {
-            JQ_COMMAND='to_entries|map({key: .key, value: (.value.description // empty) | gsub("\\n"; "")}) | map(.key + "\t" + .value) | .[]'
-            jq -r "$JQ_COMMAND" < "${OPTIONS_JSON}" | sed -e 's/$/\t/'
-      }
-fi
+LISTING=${LISTING:-1}
+function formatOptions() {
+      jq -L "$JQLIB" --raw-output0 'include "option-formats";'" listing$LISTING" < "${OPTIONS_JSON}"
+}
 
 # the fzf search wrapper
 function search() {
       formatOptions \
-            | tr '\n\t' '\0\n' \
-            | fzf --exit-0 --read0 --exact \
+            | fzf --exit-0 --exact \
+            --read0 --delimiter '\t' --with-nth 2.. \
             --reverse \
             --no-sort \
             --prompt="Nix Module Options (Press ? for help)> " \
             --bind '?:preview:echo -e "ctrl-v view source file\nctrl-u go to parent path of current option"' \
-            --preview="bash $OPTIONSEARCH preview {}" \
+            --preview="bash $OPTIONSEARCH preview {1}" \
             --preview-window=wrap,down \
-            --bind="ctrl-u:become(bash $OPTIONSEARCH refine {} {q})" \
-            --bind="ctrl-v:become(bash $OPTIONSEARCH source {} {q} )" \
+            --bind="ctrl-u:become(bash $OPTIONSEARCH refine {1} {q})" \
+            --bind="ctrl-v:become(bash $OPTIONSEARCH source {1} {q} )" \
             --track \
             --query "$QUERY"
 }
-
-function extract_name() {
-      echo "$1" | sed -e '1q' | sed -e 's/\t.*//' # key only (no detail line)
-}
-
-function raw_entry() {
-      # shellcheck disable=SC2001
-      NAME_ESCAPED=$(echo "$NAME" | sed -e 's?"?\\"?g') # double-quote needs quoting in jq
-      jq ".\"$NAME_ESCAPED\"" < "${OPTIONS_JSON}"
-}
-
-
 
 if [ $# == 0 ]; then
 
       if [ "${OPTIONS_JSON:-}" == "" ]; then
             echo "Missing OPTIONS_JSON. Define path via env var."
             echo ""
-            echo "EnvVar: SEARCH=keys or description: index key only or including description"
+            echo "EnvVar: LISTING=1 (option only) or LISTING=2 (option+description)"
             exit 1
       fi
 
       QUERY="" search
 elif [ "$1" == "source" ]; then
       shift 1;
-      NAME=$(extract_name "$1")
-      RAW=$(raw_entry)
-      DECLARATION=$(echo "$RAW" | jq -r '.declarations[]')
+      DECLARATION=$(jq -L "$JQLIB" 'include "option-formats"; declaration($option)' \
+            --arg option "$1" -r < "$OPTIONS_JSON")
       exec vim "$DECLARATION"
 
 elif [ "$1" == "preview" ]; then
       # set -x # debugging
       shift 1;
-      NAME=$(extract_name "$1")
-      RAW=$(raw_entry)
-      echo "$RAW" | jq -L "$JQLIB" -r "include \"option-formats\"; preview(\"$NAME\")";
+      jq -L "$JQLIB" 'include "option-formats"; preview($option)' \
+            --arg option "$1" -r < "$OPTIONS_JSON"
 
 elif [ "$1" == "refine" ]; then
       shift 1;

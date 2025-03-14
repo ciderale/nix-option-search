@@ -31,4 +31,16 @@ def main_block(name): [
   ""
 ];
 
-def preview(name): (main_block(name) + example_block) | join("\n");
+def preview(name): .[name] | (main_block(name) + example_block) | join("\n");
+def declaration(name): .[name].declarations[];
+
+# tab separated column, with 1 element being the option
+def listing1:
+  keys | map([.,.] |@tsv) | .[];
+
+def listing2_detail:
+  "   " + (.value.description // empty) | gsub("\\n"; " ");
+
+def listing2: to_entries | map(
+  [ ([.key, .key] | @tsv), listing2_detail, "" ] | join("\n")
+) | .[];
