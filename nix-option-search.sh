@@ -12,7 +12,7 @@ function formatOptions() {
 function search() {
       formatOptions \
             | fzf --exit-0 --exact \
-            --read0 --delimiter '\t' --with-nth 2.. \
+            --read0 --delimiter '\t' --accept-nth 1 --with-nth 2.. \
             --reverse \
             --no-sort \
             --prompt="Nix Module Options (Press ? for help)> " \
