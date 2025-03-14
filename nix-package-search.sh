@@ -16,11 +16,11 @@ HEADER='include "package-formats";header'
 
 (
 jq -L "$JQLIB" -n -r "$HEADER"
-nix search "$NIXPKGS_EXPR" --json "${1:-.}" | jq -L "$JQLIB" -r "$LISTING"
+nix search "$NIXPKGS_EXPR" --json "${1:-.}" | jq -L "$JQLIB" "$LISTING" --raw-output0
 ) | fzf --exit-0 --sync \
     --exact --reverse \
-    --preview "nix eval --json '$FLAKE#{4}.meta' --json | jq -L $JQLIB -r '$PREVIEW'" \
-    --delimiter '\t' --with-nth ..3 --accept-nth 2 \
+    --preview "nix eval --json '$FLAKE#{1}.meta' --json | jq -L $JQLIB -r '$PREVIEW'" \
+    --read0 --delimiter '\t' --accept-nth 1 --with-nth 2.. \
     --prompt="Nixpkgs Search (Press ? for help)> " \
     --bind "?:preview:echo \"$INFO\"" \
     --header-lines 1 \

@@ -2,20 +2,22 @@ include "formatting";
 
 def removeLegacyPackages: sub("[^.]*.[^.]*.";"");
 
+# tab separated column, with 1 element being the full package name
 def listing_padding:
-  [pad(.[0]; 10), pad(.[1]; 20), .[2], .[3]] | @tsv;
+  [.[0], pad(.[1]; 10), pad(.[2]; 20), .[3]] | @tsv;
 
 def header: [
+  "Key",
   "Version",
   "Package",
-  "Descrition",
-  "Key"
+  "Descrition"
 ] | listing_padding;
 
 def listing: to_entries | map([
+  .key,
   .value.version,
   (.key|removeLegacyPackages),
-  .value.description, .key
+  .value.description
 ] | listing_padding ) | .[];
 
 
