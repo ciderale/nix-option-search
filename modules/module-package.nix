@@ -18,14 +18,16 @@ in {
 
         e.g. nixpkgs, github:nixos/nixpkgs
 
-        Defaults to the current nixpkgs version
-        if "inputs" is available in the module inputs.
+        Defaults to the current nixpkgs version if "inputs" is available in the module function inputs.
+        In that case, the "revision & narHash from inputs.nixpkgs" is used to index your actual nixpkgs version.
 
-        The above default is obtained by adding
-           "specialArgs = {inherit inputs;};"
-        in your module boostrap code. In that case, the
-           "revision & narHash from inputs.nixpkgs"
-        is used to index your actual nixpkgs version.
+        Some module systems (e.g. flake-parts) automatically make flake inputs available to modules.
+        For others, the flake inputs can to be added via specialArgs in the module boostrap code, e.g:
+           ```nix
+           lib.evalModule {
+               specialArgs = {inherit inputs;};
+           }
+           ```
       '';
       example = "github:nixos/nixpkgs";
       default =
