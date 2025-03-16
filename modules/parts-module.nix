@@ -2,7 +2,7 @@
 # with the option.json of the entire flake-parts module
 top: {
   config.perSystem = ps @ {pkgs, ...}: let
-    optionsearch = pkgs.callPackages ./nix-option-search.nix {};
+    optionsearch = pkgs.callPackages ../nix-option-search.nix {};
     flake-parts-option-search = optionsearch.documentOptions {
       # ensure that options have a proper 'pkgs' argument
       options = top.options // {perSystem = {};} // ps.options;

@@ -6,7 +6,7 @@ ctx @ {
 }: let
   cfg = config.documentation.package-search;
 
-  package-search = pkgs.callPackage ./nix-package-search.nix {};
+  package-search = pkgs.callPackage ../nix-package-search.nix {};
 in {
   imports = [./module-base.nix];
   options.documentation.package-search = {

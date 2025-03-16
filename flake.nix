@@ -14,11 +14,11 @@
       nixpkgs.lib.genAttrs nixpkgs.lib.systems.flakeExposed
       (system: function nixpkgs.legacyPackages.${system});
   in {
-    nixosModules.default = ./module.nix; # deprecated, use 'modules.*'
+    nixosModules.default = ./modules/module.nix; # deprecated, use 'modules.*'
     modules = {
-      default = ./module.nix;
-      flake-parts = ./parts-module.nix;
-      flake-parts-devenv = ./parts-devenv-module.nix;
+      default = ./modules/module.nix;
+      flake-parts = ./modules/parts-module.nix;
+      flake-parts-devenv = ./modules/parts-devenv-module.nix;
     };
     packages = forAllSystems (
       pkgs: let
@@ -39,7 +39,7 @@
     });
     debug = forAllSystems (pkgs: {
       default = nixpkgs.lib.modules.evalModules {
-        modules = [self.nixosModules.default ./test.nix];
+        modules = [self.modules.default ./test.nix];
         specialArgs = {inherit pkgs;};
       };
     });

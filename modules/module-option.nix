@@ -7,7 +7,7 @@
 }: let
   cfg = config.documentation.option-search;
 
-  option-search = pkgs.callPackages ./nix-option-search.nix {};
+  option-search = pkgs.callPackages ../nix-option-search.nix {};
 
   # removes the prefix if the modules is imported as a submodule (e.g. devenv in flake-parts)
   # since all options (referenced from here) have this prefix, it's worth dropping the prefix
