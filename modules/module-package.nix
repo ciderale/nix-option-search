@@ -6,6 +6,8 @@ ctx @ {
 }: let
   cfg = config.documentation.package-search;
 
+  prefix = "nix-discover";
+
   package-search = pkgs.callPackage ../nix-package-search.nix {};
 in {
   imports = [./module-base.nix];
@@ -41,7 +43,7 @@ in {
       type = lib.types.package;
       description = "the nix-package-search wrapper including the nixpkgs flake reference";
       default = pkgs.writeShellApplication {
-        name = "nix-package-search";
+        name = "${prefix}-package";
         runtimeInputs = [package-search];
         text = ''NIXPKGS_EXPR="${cfg.nixpkgs-expression}" nix-package-search "''${@}"'';
       };

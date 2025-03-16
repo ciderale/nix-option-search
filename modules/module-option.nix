@@ -7,6 +7,10 @@
 }: let
   cfg = config.documentation.option-search;
 
+  prefix = "nix-discover";
+  module-system-name = config.documentation.module-system-name;
+  defaultToolName = "${prefix}-${module-system-name}-options";
+
   option-search = pkgs.callPackages ../nix-option-search.nix {};
 
   # removes the prefix if the modules is imported as a submodule (e.g. devenv in flake-parts)
@@ -29,7 +33,7 @@ in {
     enable = lib.mkEnableOption "nix-option-search";
     name = lib.options.mkOption {
       type = lib.types.str;
-      default = "nix-option-search";
+      default = defaultToolName;
       description = "The name of the option-search wrapper command";
       example = "docs";
     };
