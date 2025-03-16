@@ -15,13 +15,14 @@ LISTING='include "package-formats";listing'
 HEADER='include "package-formats";header'
 
 (
-jq -L "$JQLIB" -n -r "$HEADER"
+jq -L "$JQLIB" -n -r "$HEADER" --raw-output0
 nix search "$NIXPKGS_EXPR" --json "${1:-.}" | jq -L "$JQLIB" "$LISTING" --raw-output0
 ) | fzf --exit-0 --sync \
     --exact --reverse \
+    --header-border --header-label "Flake: $NIXPKGS_EXPR" --header-label-pos 3 \
     --preview "nix eval --json '$FLAKE#{1}.meta' --json | jq -L $JQLIB -r '$PREVIEW'" \
     --read0 --delimiter '\t' --accept-nth 1 --with-nth 2.. \
-    --prompt="Nixpkgs Search (Press ? for help)> " \
+    --prompt="Nix Packages Search (Press ? for help)> " \
     --bind "?:preview:echo \"$INFO\"" \
     --header-lines 1 \
     --no-hscroll \
