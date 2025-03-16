@@ -1,12 +1,13 @@
 {
   writeShellApplication,
   nix-option-search-cli,
+  nix-package-search,
   fzf,
   coreutils,
 }: let
-  nix-option-search = writeShellApplication {
-    name = "nix-option-search";
-    runtimeInputs = [nix-option-search-cli fzf coreutils];
+  nix-discover-standalone = writeShellApplication {
+    name = "nix-discover-standalone";
+    runtimeInputs = [nix-option-search-cli nix-package-search fzf coreutils];
     text = ''
       function option_json_path() {
         JSON_PATH=$1
@@ -16,9 +17,12 @@
       }
 
       if [ -z "''${OPTIONS_JSON:-}" ]; then
-        KNOWN="devenv|home-manager|nixos|kubenix"
+        KNOWN="nixpkgs|packages:nixpkgs/nixpkgs-unstable|packages:.|devenv|home-manager|nixos|kubenix"
         EXTRA="hm|custom"
         case "''${1:-fzf}" in
+          nixpkgs|packages*)
+            NIXPKGS_EXPR=''${1#*:} exec nix-package-search
+            ;;
 
           home-manager|hm)
             OPTIONS_JSON=$(option_json_path "/share/doc/home-manager/options.json" "home-manager#docs-json")
@@ -65,6 +69,6 @@
     '';
   };
 in {
-  inherit nix-option-search;
-  default = nix-option-search;
+  inherit nix-discover-standalone;
+  default = nix-discover-standalone;
 }

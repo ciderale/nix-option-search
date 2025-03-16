@@ -26,7 +26,7 @@
         nix-package-search = pkgs.callPackage ./nix-package-search.nix {};
       in
         {inherit nix-package-search nix-option-search-cli;}
-        // (pkgs.callPackages ./standalone.nix {inherit nix-option-search-cli;})
+        // (pkgs.callPackages ./standalone.nix {inherit nix-option-search-cli nix-package-search;})
     );
     devShells = forAllSystems (pkgs: {
       default =
