@@ -24,8 +24,11 @@
     };
   };
   config = {
-    documentation.option-search.enable = true;
-    documentation.package-search.enable = true;
+    documentation = {
+      module-system-name = "test"; # avoid 'has conflicting definition values'
+      option-search.enable = true;
+      package-search.enable = true;
+    };
     devsh = pkgs.mkShellNoCC {
       buildInputs = config.packages or [];
     };
