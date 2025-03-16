@@ -33,17 +33,28 @@
         lib,
         ...
       }: {
-        devenv.shells.default = {
-          containers = lib.mkForce {};
-          packages = [inputs'.nix-discover.packages.default];
+        devenv.shells.generic = {
+          # should work for any module nix systems
+          # that it's used in devenv in flake-parts is not necessary
+          # this module does not need an import in the flake-parts.imports
+          imports = [inputs.nix-discover.modules.default];
           documentation.nix-discover = {
             option-search.enable = true;
             package-search.enable = true;
-            flake-parts-option-search.enable = true; # provided by flake-parts-devenv
           };
-          # manually add when not using flake-parts-devenv
-          # imports = [inputs.nix-discover.modules.default];
-          #packages = [config.packages.nix-discover-flake-parts-options];
+          # optionally, include nix-discover-standalone
+          packages = [inputs'.nix-discover.packages.default];
+        };
+        devenv.shells.devenv = {
+          # this module relies on the flake-parts.imports of nix-discovery
+          containers = lib.mkForce {};
+          documentation.nix-discover = {
+            option-search.enable = true;
+            package-search.enable = true;
+            # provided by flake-parts-devenv
+            flake-parts-option-search.enable = true;
+          };
+          packages = [inputs'.nix-discover.packages.default];
         };
       };
     };
