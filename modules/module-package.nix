@@ -4,14 +4,14 @@ ctx @ {
   config,
   ...
 }: let
-  cfg = config.documentation.package-search;
-
   prefix = "nix-discover";
+
+  cfg = config.documentation.${prefix}.package-search;
 
   package-search = pkgs.callPackage ../nix-package-search.nix {};
 in {
   imports = [./module-base.nix];
-  options.documentation.package-search = {
+  options.documentation.${prefix}.package-search = {
     enable = lib.mkEnableOption "nix-package-search";
     nixpkgs-expression = lib.options.mkOption {
       type = lib.types.str;
@@ -50,6 +50,6 @@ in {
     };
   };
   config = {
-    documentation.packages = lib.optional cfg.enable cfg.package;
+    documentation.${prefix}.packages = lib.optional cfg.enable cfg.package;
   };
 }

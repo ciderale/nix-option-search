@@ -4,22 +4,23 @@
   lib,
   ...
 }: let
-  packages = config.documentation.packages;
+  prefix = "nix-discover";
+  cfg = config.documentation.${prefix};
   # the following are heuristic auto-detection for common module systems
   devenv = lib.optionalAttrs (options ? packages) {
-    packages = packages;
-    documentation.module-system-name = lib.mkDefault "devenv";
+    packages = cfg.packages;
+    documentation.${prefix}.module-system-name = lib.mkDefault "devenv";
   };
   nixos = lib.optionalAttrs (options ? environment.defaultPackages) {
-    environment.defaultPackages = packages;
-    documentation.module-system-name = lib.mkDefault "nixos";
+    environment.defaultPackages = cfg.packages;
+    documentation.${prefix}.module-system-name = lib.mkDefault "nixos";
   };
   home-manager = lib.optionalAttrs (options ? home.packages) {
-    home.packages = packages;
-    documentation.module-system-name = lib.mkDefault "home-manager";
+    home.packages = cfg.packages;
+    documentation.${prefix}.module-system-name = lib.mkDefault "home-manager";
   };
 in {
-  options.documentation = {
+  options.documentation.${prefix} = {
     packages = lib.options.mkOption {
       type = lib.types.listOf lib.types.package;
       description = ''List of documentation related packages to include'';

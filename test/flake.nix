@@ -8,7 +8,7 @@
     devenv.inputs.cachix.follows = "";
     #nix-discover.url = "github:ciderale/nix-option-search";
     nix-discover.url = "path:..";
-    nix-discover.inputs.nixpkgs.follows = "";
+    nix-discover.inputs.nixpkgs.follows = "nixpkgs";
   };
 
   outputs = inputs @ {flake-parts, ...}:
@@ -18,6 +18,7 @@
         inputs.devenv.flakeModule
         flake-parts.flakeModules.modules
         flake-parts.flakeModules.flakeModules
+        # inputs.nix-discover.modules.flake-parts
         inputs.nix-discover.modules.flake-parts-devenv
       ];
       systems = [
@@ -27,10 +28,22 @@
         "aarch64-darwin"
       ];
       perSystem = {
+        inputs',
+        config,
+        lib,
+        ...
+      }: {
         devenv.shells.default = {
-          documentation.option-search.enable = true;
-          documentation.option-search.flake-parts.enable = true;
-          documentation.package-search.enable = true;
+          containers = lib.mkForce {};
+          packages = [inputs'.nix-discover.packages.default];
+          documentation.nix-discover = {
+            option-search.enable = true;
+            package-search.enable = true;
+            flake-parts-option-search.enable = true; # provided by flake-parts-devenv
+          };
+          # manually add when not using flake-parts-devenv
+          # imports = [inputs.nix-discover.modules.default];
+          #packages = [config.packages.nix-discover-flake-parts-options];
         };
       };
     };

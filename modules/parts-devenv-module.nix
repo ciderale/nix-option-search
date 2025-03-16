@@ -12,9 +12,12 @@
       config,
       ...
     }: {
-      options.documentation.option-search.flake-parts.enable = lib.mkEnableOption "flake-parts-option-search";
-      config = lib.mkIf config.documentation.option-search.flake-parts.enable {
-        documentation.packages = [package];
+      options = {
+        documentation.${prefix}.flake-parts-option-search.enable =
+          lib.mkEnableOption "flake-parts-option-search";
+      };
+      config = lib.mkIf config.documentation.${prefix}.flake-parts-option-search.enable {
+        documentation.${prefix}.packages = [package];
       };
     };
   in {devenv.modules = [./module.nix devenvPackage];};

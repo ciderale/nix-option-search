@@ -24,7 +24,7 @@
     };
   };
   config = {
-    documentation = {
+    documentation.nix-discover = {
       module-system-name = "test"; # avoid 'has conflicting definition values'
       option-search.enable = true;
       package-search.enable = true;

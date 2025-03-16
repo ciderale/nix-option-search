@@ -5,10 +5,12 @@
   config,
   ...
 }: let
-  cfg = config.documentation.option-search;
-
   prefix = "nix-discover";
-  module-system-name = config.documentation.module-system-name;
+  cfgBase = config.documentation.${prefix};
+  cfg = cfgBase.option-search;
+  someOptionPath = "documentation.${prefix}.option-search.enable";
+
+  module-system-name = cfgBase.module-system-name;
   defaultToolName = "${prefix}-${module-system-name}-options";
 
   option-search = pkgs.callPackages ../nix-option-search.nix {};
@@ -17,7 +19,6 @@
   # since all options (referenced from here) have this prefix, it's worth dropping the prefix
   dropPrefix = let
     len = lib.strings.stringLength;
-    someOptionPath = "documentation.option-search.enable";
     someOption = lib.attrsets.getAttrFromPath (lib.strings.splitString "." someOptionPath) options;
     optionPrefixLen = (len "${someOption}") - (len someOptionPath);
   in
@@ -29,7 +30,7 @@
   };
 in {
   imports = [./module-base.nix];
-  options.documentation.option-search = {
+  options.documentation.${prefix}.option-search = {
     enable = lib.mkEnableOption "nix-option-search";
     name = lib.options.mkOption {
       type = lib.types.str;
@@ -49,6 +50,6 @@ in {
     };
   };
   config = {
-    documentation.packages = lib.optional cfg.enable cfg.package;
+    documentation.${prefix}.packages = lib.optional cfg.enable cfg.package;
   };
 }

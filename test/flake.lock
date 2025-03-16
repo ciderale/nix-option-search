@@ -107,11 +107,13 @@
     },
     "nix-discover": {
       "inputs": {
-        "nixpkgs": []
+        "nixpkgs": [
+          "nixpkgs"
+        ]
       },
       "locked": {
         "lastModified": 0,
-        "narHash": "sha256-SSLtdzn/YrsOAtGgbAM8O42xWg3MuWLoip9TWqYZ1CI=",
+        "narHash": "sha256-fm/dF+irZVoILjO5ASRRs5YUPjLeMLnXaluo29w3DHM=",
         "path": "..",
         "type": "path"
       },
