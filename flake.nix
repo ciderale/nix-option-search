@@ -34,7 +34,7 @@
     });
     debug = forAllSystems (pkgs: {
       default = nixpkgs.lib.modules.evalModules {
-        modules = [self.modules.default ./test.nix];
+        modules = [self.modules.default ./test.nix {packages = [self.packages.${pkgs.system}.default];}];
         specialArgs = {inherit pkgs;};
       };
     });
