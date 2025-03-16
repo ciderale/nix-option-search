@@ -28,14 +28,9 @@
         {inherit nix-package-search nix-option-search-cli;}
         // (pkgs.callPackages ./standalone.nix {inherit nix-option-search-cli nix-package-search;})
     );
+    # internal for local development of this flake
     devShells = forAllSystems (pkgs: {
-      default =
-        (nixpkgs.lib.modules.evalModules {
-          modules = [self.modules.default ./test.nix];
-          specialArgs = {inherit pkgs inputs;};
-        })
-        .config
-        .devsh;
+      default = self.debug.${pkgs.system}.default.config.devsh;
     });
     debug = forAllSystems (pkgs: {
       default = nixpkgs.lib.modules.evalModules {
