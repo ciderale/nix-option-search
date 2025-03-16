@@ -21,7 +21,9 @@
         EXTRA="hm|custom"
         case "''${1:-fzf}" in
           nixpkgs|packages*)
-            NIXPKGS_EXPR=''${1#*:} exec nix-package-search
+            export NIXPKGS_EXPR=''${1#*:}
+            shift
+            exec nix-package-search "''${@}"
             ;;
 
           home-manager|hm)
