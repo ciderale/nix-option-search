@@ -50,10 +50,22 @@
       function search_choices() {
         jq -L "$JQLIB" -n -r 'include "flake-metadata"; header'
         local_flake_refs;
-        global_flake_refs
+        if [ "''${SEARCH_MODE:-}" = "all" ]; then
+          global_flake_refs
+        fi
       }
 
       case "''${1:-default}" in
+        -h|--help)
+          echo "Interactive search of flake packages & module options"
+          echo "  no arguments:   interactive selection of search focus"
+          echo "  with arguments: automatic selection -- if unique"
+          echo ""
+          echo "  by default: only local flake references are considered"
+          echo "  SEARCH_MODE=all adds additional upstream flake references"
+          exit 0
+          ;;
+
         packages)
           echo "seach packages $*"
           shift
