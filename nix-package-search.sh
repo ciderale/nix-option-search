@@ -16,8 +16,8 @@ HEADER='include "package-formats";header'
 
 (
 jq -L "$JQLIB" -n -r "$HEADER" --raw-output0
-nix search "$NIXPKGS_EXPR" --json "${1:-.}" | jq -L "$JQLIB" "$LISTING" --raw-output0
-) | fzf --exit-0 --sync \
+nix search "$NIXPKGS_EXPR" --json "${1:-.}" | jq -L "$JQLIB" "$LISTING" --raw-output0 --exit-status
+) | fzf --exit-0 \
     --exact --reverse \
     --header-border --header-label "Flake: $NIXPKGS_EXPR" --header-label-pos 3 \
     --preview "nix eval --json '$FLAKE#{1}.meta' --json | jq -L $JQLIB -r '$PREVIEW'" \
