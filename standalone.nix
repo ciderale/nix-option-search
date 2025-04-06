@@ -71,7 +71,7 @@
           shift
           export NIXPKGS_EXPR=''${1}
           shift
-          exec nix-package-search
+          exec nix-package-search "''${@}"
           ;;
 
         options)
@@ -88,7 +88,7 @@
         *)
           echo "select something using fzf"
           CHOICE=$(
-            search_choices | fzf -e --sort \
+            search_choices | fzf -e --no-sort \
                 --header-lines 1 \
                 --delimiter '\t' \
                 --with-nth "2.." \
@@ -98,7 +98,7 @@
                 | tr -d '\n'
           )
           IFS="," read -r -a CHOICE_ARR <<< "$CHOICE"
-          $0 "''${CHOICE_ARR[@]}"
+          $0 "''${CHOICE_ARR[@]}" "''${2:-}"
           ;;
       esac
     '';
