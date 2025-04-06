@@ -91,7 +91,7 @@
             search_choices | fzf -e --no-sort \
                 --header-lines 1 \
                 --delimiter '\t' \
-                --with-nth "2.." \
+                --with-nth "2.." --nth "..3" \
                 --header 'What options would you like to search through?' \
                 --query "''${1:-}" --select-1 \
                 --accept-nth "{1}" \

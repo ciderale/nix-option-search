@@ -15,7 +15,7 @@ def asList:
 	to_entries | map(.value + {key: .key});
 
 def padding:
-	[.[0], pad(.[1];10), pad(.[2];20), pad(.[3];10)];
+	[.[0], pad(.[1];9), pad(.[2];20), pad(.[3];20), .[4]];
 
 def display: .[] | padding | @tsv;
 
@@ -23,7 +23,7 @@ def header: [[
   "args",
 	"Type",
 	"Name",
-	"Date",
+	"Last Modified",
 	"FlakeRef"
 ]] | display;
 
