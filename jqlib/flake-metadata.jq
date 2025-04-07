@@ -15,7 +15,7 @@ def asList:
 	to_entries | map(.value + {key: .key});
 
 def padding:
-	[.[0], pad(.[1];9), pad(.[2];20), pad(.[3];20), .[4]];
+	[.[0], pad(.[1];20), pad(.[2];15), pad(.[3];20), .[4]];
 
 def display: .[] | padding | @tsv;
 
@@ -29,7 +29,12 @@ def header: [[
 
 
 def packages:
-	["packages,"+.ref, "packages", .key, .lastModified, .ref];
+	["packages,"+.ref,
+	 colored_text(.key;"blue"),
+	 colored_text("packages";"blue"),
+	 .lastModified,
+	 .ref
+	];
 
 def detectOption:
 	if .ref | contains("nixpkgs") then
@@ -47,7 +52,10 @@ def detectOption:
 def options:
   (. | detectOption) as $optionType | [
 	  "options,"+$optionType+","+.ref,
-		"options", $optionType, .lastModified, .ref
+		.key,
+		colored_text("options-" + $optionType;"green"),
+		.lastModified,
+		.ref
   ];
 
 def generateSelection:

@@ -14,5 +14,7 @@ def colored_text(text; color):
   escape + colors[color] + text + escape + colors.reset;
 def flagText(flag;lab;color):
   if flag then colored_text(lab;color) else "" end;
+def length_ansi:
+  gsub("\\x1b\\[[0-9;]*[mK]"; "") | length;
 def pad(text;n):
-  text + (" "*(text | n - length));
+  text + (" "*(text | n - length_ansi));
