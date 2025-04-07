@@ -53,8 +53,11 @@ def options:
 def generateSelection:
 	packages, options;
 
+def root_inputs:
+	.locks.nodes as $nodes | $nodes.root.inputs | map_values($nodes[.]);
+
 def list:
-	.locks.nodes | map_values(select(.locked) | .locked | myformat) | asList | map(generateSelection) | display;
+	root_inputs | map_values(select(.locked) | .locked | myformat) | asList | map(generateSelection) | display;
 
 def static: [
     ({ref: "nixpkgs", key: "nixpkgs", lastModified: "latest"} | packages),
